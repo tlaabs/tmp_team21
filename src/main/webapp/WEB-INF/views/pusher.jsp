@@ -30,7 +30,7 @@
 		var xs = data.pos.xs;
 		var ys = data.pos.ys;
 		var color = data.pos.color;
-		
+
 		draw(xs, ys, color);
 	});
 	channel.bind('chat', function(data) {
@@ -49,6 +49,18 @@
 		var ys = data.history.ys;
 		var color = data.history.color;
 		drawHistory(xs, ys, color);
+	});
+	channel.bind('clear', function(data) {
+		xsHistory = [];
+		ysHistory = [];
+		colorHistory = [];
+
+		var width = $("#canvas").width();
+		var height = $("#canvas").height();
+
+		var cnvs = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+		ctx.clearRect(0, 0, width, height);
 	});
 
 	function broadcast() {
@@ -116,6 +128,21 @@
 		});
 	}
 
+	function allClear() {
+		$.ajax({
+			method : 'POST',
+			url : '/clear',
+			traditional : true,
+			data : {
+				channel : userChannel,
+				nickname : userNickname,
+			},
+			success : function(data) {
+			}
+
+		});
+	}
+
 	function draw(xs, ys, color) {
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
@@ -148,15 +175,14 @@
 		}
 	}
 
-	$(window).on("load",function() {
+	$(window).on("load", function() {
 		var drawing = false;
 		var stackX = [];
 		var stackY = [];
-		
+
 		setTimeout(function() {
 			enter();
-			}, 1000);
-	
+		}, 1000);
 
 		$("#canvas").mousedown(function(event) {
 			console.log("마우스 다운 발생");
@@ -188,7 +214,7 @@
 			var relativeX = event.pageX;
 			var relativeY = event.pageY;
 			var color = $("#color").val();
-			
+
 			console.log(relativeX + ":" + relativeY + ":" + color);
 			send(stackX, stackY, color);
 			xsHistory.push(stackX);
@@ -196,7 +222,7 @@
 			colorHistory.push(color);
 			stackX = [];
 			stackY = [];
-			
+
 		});
 	});
 </script>
@@ -225,7 +251,8 @@
 
 	<textarea id="chatArea" name="chat" cols="40" rows="20"></textarea>
 	<input id="chatMsg" type="text" />
-	<input id="color" type="color"/>
+	<input id="color" type="color" />
+	<input id="clear" type="button" value="Clear" onclick="allClear()">
 	<input type="button" value="전송" onclick="sendMsg()" />
 
 </body>

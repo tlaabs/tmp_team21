@@ -108,6 +108,15 @@ public class HomeController {
 //		System.out.println("배열y : " + ys);
 
 	}
+	
+	@RequestMapping(value = "/clear", method = RequestMethod.POST)
+	public void clear(HttpServletRequest request) {
+		String channel = request.getParameter("channel");
+		String nickname = request.getParameter("nickname");
+
+		pusher.trigger(channel, "clear", Collections.singletonMap("-", "-"));
+
+	}
 
 	private int[][] HistoryJsonToArray(String src) {
 
