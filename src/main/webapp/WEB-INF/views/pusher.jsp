@@ -18,6 +18,7 @@
 	var userNickname = "${nickname}";
 	xsHistory = [];
 	ysHistory = [];
+	colorHistory = [];
 
 	var pusher = new Pusher('9aad0be92f1331f371c5', {
 		cluster : 'ap1',
@@ -28,7 +29,9 @@
 		//alert(JSON.stringify(data));
 		var xs = data.pos.xs;
 		var ys = data.pos.ys;
-		draw(xs, ys);
+		var color = data.pos.color;
+		
+		draw(xs, ys, color);
 	});
 	channel.bind('chat', function(data) {
 		var msg = data.msg;
@@ -44,7 +47,8 @@
 	channel.bind('broadcastRecv', function(data) {
 		var xs = data.history.xs;
 		var ys = data.history.ys;
-		drawHistory(xs, ys);
+		var color = data.history.color;
+		drawHistory(xs, ys, color);
 	});
 
 	function broadcast() {
@@ -56,14 +60,15 @@
 				channel : userChannel,
 				nickname : userNickname,
 				xs : JSON.stringify(xsHistory),
-				ys : JSON.stringify(ysHistory)
+				ys : JSON.stringify(ysHistory),
+				color : colorHistory
 			},
 			success : function(data) {
 			}
 		});
 	}
 
-	function send(stackX, stackY) {
+	function send(stackX, stackY, color) {
 		$.ajax({
 			method : 'POST',
 			url : '/event',
@@ -72,7 +77,8 @@
 				channel : userChannel,
 				nickname : userNickname,
 				xs : stackX,
-				ys : stackY
+				ys : stackY,
+				color : color
 			},
 			success : function(data) {
 			}
@@ -110,7 +116,7 @@
 		});
 	}
 
-	function draw(xs, ys) {
+	function draw(xs, ys, color) {
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
 		ctx.beginPath();
@@ -118,11 +124,12 @@
 		for (var i = 1; i < xs.length; i++) {
 			ctx.lineTo(xs[i], ys[i]);
 		}
+		ctx.strokeStyle = color;
 		ctx.stroke();
 		ctx.closePath();
 	}
 
-	function drawHistory(xs, ys) {
+	function drawHistory(xs, ys, color) {
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
 
@@ -135,6 +142,7 @@
 					ctx.lineTo(xs[i][k], ys[i][k]);
 				}
 			}
+			ctx.strokeStyle = color[i];
 			ctx.stroke();
 			ctx.closePath();
 		}
@@ -179,13 +187,16 @@
 			drawing = false;
 			var relativeX = event.pageX;
 			var relativeY = event.pageY;
-
-			console.log(relativeX + ":" + relativeY);
-			send(stackX, stackY);
+			var color = $("#color").val();
+			
+			console.log(relativeX + ":" + relativeY + ":" + color);
+			send(stackX, stackY, color);
 			xsHistory.push(stackX);
 			ysHistory.push(stackY);
+			colorHistory.push(color);
 			stackX = [];
 			stackY = [];
+			
 		});
 	});
 </script>
@@ -214,6 +225,7 @@
 
 	<textarea id="chatArea" name="chat" cols="40" rows="20"></textarea>
 	<input id="chatMsg" type="text" />
+	<input id="color" type="color"/>
 	<input type="button" value="전송" onclick="sendMsg()" />
 
 </body>

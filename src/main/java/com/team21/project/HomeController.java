@@ -58,14 +58,17 @@ public class HomeController {
 	public void message(HttpServletRequest request, int xs[], int ys[]) {
 		String channel = request.getParameter("channel");
 		String nickname = request.getParameter("nickname");
+		String color = request.getParameter("color");
 
 		System.out.println("nickname : " + nickname);
 
-		DrawPkg pkg = new DrawPkg(xs, ys);
+		DrawPkg pkg = new DrawPkg(xs, ys, color);
 		pusher.trigger(channel, "event", Collections.singletonMap("pos", pkg));
 
 		System.out.println("x : " + xs.length);
 		System.out.println("y : " + ys.length);
+		System.out.println("color : " + color);
+		
 	}
 
 	@RequestMapping(value = "/chat", method = RequestMethod.POST)
@@ -89,7 +92,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/broadcast", method = RequestMethod.POST)
-	public void broadcast(HttpServletRequest request) {
+	public void broadcast(HttpServletRequest request, String[] color) {
 		String channel = request.getParameter("channel");
 		String nickname = request.getParameter("nickname");
 		String xs = request.getParameter("xs");
@@ -98,7 +101,7 @@ public class HomeController {
 		int[][] xsArrays = HistoryJsonToArray(xs);
 		int[][] ysArrays = HistoryJsonToArray(ys);
 		
-		HistoryPkg pkg = new HistoryPkg(xsArrays, ysArrays);
+		HistoryPkg pkg = new HistoryPkg(xsArrays, ysArrays, color);
 		pusher.trigger(channel, "broadcastRecv", Collections.singletonMap("history", pkg));
 
 //		System.out.println("배열x : " + xs);
