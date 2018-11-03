@@ -31,7 +31,7 @@ public class HomeController {
 	static private Pusher pusher;
 
 	static {
-		pusher = new Pusher("636752", "9aad0be92f1331f371c5", "49a115d520877bac1a60");
+		pusher = new Pusher("", "", "");
 		pusher.setCluster("ap1");
 		pusher.setEncrypted(true);
 	}
@@ -64,10 +64,6 @@ public class HomeController {
 
 		DrawPkg pkg = new DrawPkg(xs, ys, color);
 		pusher.trigger(channel, "event", Collections.singletonMap("pos", pkg));
-
-		System.out.println("x : " + xs.length);
-		System.out.println("y : " + ys.length);
-		System.out.println("color : " + color);
 		
 	}
 
@@ -84,7 +80,7 @@ public class HomeController {
 	public void enter(HttpServletRequest request) {
 		String channel = request.getParameter("channel");
 		String nickname = request.getParameter("nickname");
-		String msg = "[ " + nickname + " ]" + " : " + "님이 입장하셨습니다.";
+		String msg = "[ " + nickname + " ] " + "has entered your channel.";
 
 		pusher.trigger(channel, "enter", Collections.singletonMap("msg", msg));
 		pusher.trigger(channel, "broadcast", Collections.singletonMap("-", "-"));
@@ -103,9 +99,6 @@ public class HomeController {
 		
 		HistoryPkg pkg = new HistoryPkg(xsArrays, ysArrays, color);
 		pusher.trigger(channel, "broadcastRecv", Collections.singletonMap("history", pkg));
-
-//		System.out.println("배열x : " + xs);
-//		System.out.println("배열y : " + ys);
 
 	}
 	
@@ -129,10 +122,8 @@ public class HomeController {
 				int[] innerArr = new int[inner.length()];
 				for (int k = 0; k < inner.length(); k++) {
 					innerArr[k] = inner.getInt(k);
-					// System.out.println(inner.getInt(k));
 				}
 				arr[i] = innerArr;
-				// System.out.println("inner : " + inner);
 			}
 
 		} catch (Exception e) {

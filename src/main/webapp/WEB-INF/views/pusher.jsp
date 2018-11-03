@@ -5,14 +5,19 @@
 
 <!DOCTYPE html>
 <head>
-<title>Pusher Test</title>
+<title>Study Code</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
 <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 <script>
 	// Enable pusher logging - don't include this in production
-	Pusher.logToConsole = true;
+	Pusher.logToConsole = false;
 
 	var userChannel = "${channel}";
 	var userNickname = "${nickname}";
@@ -26,7 +31,6 @@
 	});
 	var channel = pusher.subscribe("${channel}");
 	channel.bind('event', function(data) {
-		//alert(JSON.stringify(data));
 		var xs = data.pos.xs;
 		var ys = data.pos.ys;
 		var color = data.pos.color;
@@ -99,6 +103,7 @@
 
 	function sendMsg() {
 		var msg = $("#chatMsg").val();
+		$("#chatMsg").val("");
 		$.ajax({
 			method : 'POST',
 			url : '/chat',
@@ -183,19 +188,22 @@
 		setTimeout(function() {
 			enter();
 		}, 1000);
+		
+		$("#chatMsg").keyup(function(event) {
+		    if (event.keyCode === 13) {
+		        $("#send").click();
+		    }
+		});
 
 		$("#canvas").mousedown(function(event) {
-			console.log("마우스 다운 발생");
 			drawing = true;
 			var relativeX = event.pageX;
 			var relativeY = event.pageY;
 
-			console.log(relativeX + ":" + relativeY);
 		});
 
 		$("#canvas").mousemove(function(event) {
 			if (drawing == true) {
-				console.log("마우스 드래그");
 				var canvasX = $("canvas").offset().left;
 				var canvasY = $("canvas").offset().top;
 
@@ -204,18 +212,15 @@
 				stackX.push(relativeX);
 				stackY.push(relativeY);
 
-				console.log(relativeX + ":" + relativeY);
 			}
 		});
 
 		$('#canvas').mouseup(function(event) {
-			console.log("마우스 업");
 			drawing = false;
 			var relativeX = event.pageX;
 			var relativeY = event.pageY;
 			var color = $("#color").val();
 
-			console.log(relativeX + ":" + relativeY + ":" + color);
 			send(stackX, stackY, color);
 			xsHistory.push(stackX);
 			ysHistory.push(stackY);
@@ -231,28 +236,68 @@
 	display: inline;
 	vertical-align: top;
 }
+
+#body {
+	background: url(resources/wall.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+#chatArea {
+	position: absolute;
+}
+
+#cen {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#boardContainer {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	width: 800px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#canvas {
+	background: rgba(255, 255, 255);
+	display:inline;
+}
+
+#chatArea{
+	background: rgba(255, 255, 255, 0.8);
+	display:inline;
+	height:500px;
+	width:300px;
+}
+
+#chatMsg{
+display:inline;
+}
+
+#cain{
+display:inline;}
+
 </style>
 </head>
-<body>
-	<h1>Pusher Test</h1>
-	<p>
-		Try publishing an event to channel
-		<code>my-channel</code>
-		with event name
-		<code>my-event</code>
-		.
-	</p>
-	<input type="button" onclick="add()" value="send" />
-	<br>
-	<br>
-	<canvas id="canvas" width="500px" height="500px"
-		style="border: 1px solid #000">
-  </canvas>
+<body id="body">
+	<div id="boardContainer">
+		<canvas id="canvas" width="500px" height="500px"></canvas>
+		
+		<textarea id="chatArea" name="chat" cols="30" rows="30"></textarea><br>
+		<input id="chatMsg" class="form-control" style="width:400px" type="text" />
+		<input id="send" type="button" class="btn btn-primary" value="Send" onclick="sendMsg()" />
+		
+			<input id="clear"
+			style="font-weight: bold" class="btn btn-warning" type="button"
+			value="&nbsp;Board Clear&nbsp;" onclick="allClear()" />		
+		<input id="color" type="color" />
 
-	<textarea id="chatArea" name="chat" cols="40" rows="20"></textarea>
-	<input id="chatMsg" type="text" />
-	<input id="color" type="color" />
-	<input id="clear" type="button" value="Clear" onclick="allClear()">
-	<input type="button" value="전송" onclick="sendMsg()" />
-
+	</div>
 </body>
