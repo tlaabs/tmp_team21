@@ -57,7 +57,7 @@
 </style>
 
 <body id="body">
-	<form id="form" action="/room" method="POST">
+	<form id="form" action="room" method="POST">
 		<div id="divbg" width="500" height="500">
 			<h1>Study Code</h1><br>
 			<h4>Channel</h3>

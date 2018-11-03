@@ -31,7 +31,7 @@ public class HomeController {
 	static private Pusher pusher;
 
 	static {
-		pusher = new Pusher("", "", "");
+		pusher = new Pusher("636752", "9aad0be92f1331f371c5", "49a115d520877bac1a60");
 		pusher.setCluster("ap1");
 		pusher.setEncrypted(true);
 	}

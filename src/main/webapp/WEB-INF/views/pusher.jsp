@@ -70,7 +70,7 @@
 	function broadcast() {
 		$.ajax({
 			method : 'POST',
-			url : '/broadcast',
+			url : 'broadcast',
 			traditional : true,
 			data : {
 				channel : userChannel,
@@ -87,7 +87,7 @@
 	function send(stackX, stackY, color) {
 		$.ajax({
 			method : 'POST',
-			url : '/event',
+			url : 'event',
 			traditional : true,
 			data : {
 				channel : userChannel,
@@ -106,7 +106,7 @@
 		$("#chatMsg").val("");
 		$.ajax({
 			method : 'POST',
-			url : '/chat',
+			url : 'chat',
 			traditional : true,
 			data : {
 				channel : userChannel,
@@ -121,7 +121,7 @@
 	function enter() {
 		$.ajax({
 			method : 'POST',
-			url : '/enter',
+			url : 'enter',
 			traditional : true,
 			data : {
 				channel : userChannel,
@@ -136,7 +136,7 @@
 	function allClear() {
 		$.ajax({
 			method : 'POST',
-			url : '/clear',
+			url : 'clear',
 			traditional : true,
 			data : {
 				channel : userChannel,
