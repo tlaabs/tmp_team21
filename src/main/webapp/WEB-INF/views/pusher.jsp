@@ -40,6 +40,8 @@
 	channel.bind('chat', function(data) {
 		var msg = data.msg;
 		$("#chatArea").append(msg + "\n");
+		var scroll = document.getElementById("chatArea");
+		scroll.scrollTop = scroll.scrollHeight;
 	});
 	channel.bind('enter', function(data) {
 		var msg = data.msg;
